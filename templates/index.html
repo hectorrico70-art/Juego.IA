@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Piedra, Papel o Tijera con Inteligencia Artificial</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="fondo">
+
+<div class="contenedor">
+
+<header class="header">
+
+    <div>
+
+        <h1>🤖 Piedra, Papel o Tijera</h1>
+
+        <p class="subtitulo">
+
+            Inteligencia Artificial · Reconocimiento de Patrones
+
+        </p>
+
+    </div>
+
+</header>
+
+<section class="panel-juego">
+
+<h2>Selecciona tu jugada</h2>
+
+<form method="POST">
+
+<div class="botones">
+
+<button
+type="submit"
+name="jugada"
+value="piedra"
+class="btn piedra">
+
+🪨
+<span>Piedra</span>
+
+</button>
+
+<button
+type="submit"
+name="jugada"
+value="papel"
+class="btn papel">
+
+📄
+<span>Papel</span>
+
+</button>
+
+<button
+type="submit"
+name="jugada"
+value="tijera"
+class="btn tijera">
+
+✂️
+<span>Tijera</span>
+
+</button>
+
+</div>
+
+</form>
+
+</section>
+<!-- ========================================= -->
+<!-- RESULTADO -->
+<!-- ========================================= -->
+
+{% if resultado %}
+
+<section class="resultado {{ color }}">
+
+    <div class="titulo-resultado">
+
+        <h2>{{ icono }} {{ resultado }}</h2>
+
+    </div>
+
+    <div class="jugadas">
+
+        <div class="tarjeta">
+
+            <h3>Jugador</h3>
+
+            <div class="emoji">
+
+                {{ jugador_emoji }}
+
+            </div>
+
+        </div>
+
+        <div class="vs">
+
+            VS
+
+        </div>
+
+        <div class="tarjeta">
+
+            <h3>Inteligencia Artificial</h3>
+
+            <div class="emoji">
+
+                {{ ia_emoji }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="descripcion">
+
+        <h3>Explicación</h3>
+
+        <p>
+
+            {{ descripcion }}
+
+        </p>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+<!-- ========================================= -->
+<!-- PANEL PRINCIPAL -->
+<!-- ========================================= -->
+
+<div class="dashboard">
+
+<!-- =============================== -->
+<!-- ESTADÍSTICAS -->
+<!-- =============================== -->
+
+<section class="card">
+
+<h2>
+
+📊 Estadísticas
+
+</h2>
+
+<div class="estadistica">
+
+<span>
+
+🎮 Partidas
+
+</span>
+
+<strong>
+
+{{ partidas }}
+
+</strong>
+
+</div>
+
+<div class="estadistica">
+
+<span>
+
+🏆 Victorias
+
+</span>
+
+<strong>
+
+{{ victorias }}
+
+</strong>
+
+</div>
+
+<div class="estadistica">
+
+<span>
+
+🤝 Empates
+
+</span>
+
+<strong>
+
+{{ empates }}
+
+</strong>
+
+</div>
+
+<div class="estadistica">
+
+<span>
+
+❌ Derrotas
+
+</span>
+
+<strong>
+
+{{ derrotas }}
+
+</strong>
+
+</div>
+
+<div class="estadistica">
+
+<span>
+
+⭐ Puntaje
+
+</span>
+
+<strong>
+
+{{ puntaje }}
+
+</strong>
+
+</div>
+
+</section>
+
+<!-- =============================== -->
+<!-- IA -->
+<!-- =============================== -->
+
+<section class="card">
+
+<h2>
+
+🤖 Inteligencia Artificial
+
+</h2>
+
+<p>
+
+La IA aprende observando tus movimientos.
+
+</p>
+
+<div class="barra">
+
+<div
+
+class="progreso"
+
+style="width:{{ aprendizaje }}%;">
+
+</div>
+
+</div>
+
+<p>
+
+Nivel de aprendizaje
+
+<strong>
+
+{{ aprendizaje }} %
+
+</strong>
+
+</p>
+
+<p>
+
+Movimiento más repetido del jugador
+
+</p>
+
+<h3>
+
+{{ movimiento_favorito }}
+
+</h3>
+
+{% if razon %}
+
+<div class="razon">
+
+<h4>
+
+Estrategia utilizada
+
+</h4>
+
+<p>
+
+{{ razon }}
+
+</p>
+
+</div>
+
+{% endif %}
+
+</section>
+
+</div>
+<!-- ========================================= -->
+<!-- HISTORIAL -->
+<!-- ========================================= -->
+
+<section class="card historial">
+
+    <h2>📜 Historial de partidas</h2>
+
+    {% if historial %}
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+                <th>Jugador</th>
+                <th>IA</th>
+                <th>Resultado</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for partida in historial %}
+
+            <tr>
+
+                <td>{{ partida.numero }}</td>
+
+                <td>{{ partida.jugador }}</td>
+
+                <td>{{ partida.ia }}</td>
+
+                <td>{{ partida.resultado }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+    <p class="sin-historial">
+
+        Aún no se han jugado partidas.
+
+    </p>
+
+    {% endif %}
+
+</section>
+
+<!-- ========================================= -->
+<!-- BOTÓN REINICIAR -->
+<!-- ========================================= -->
+
+<section class="reinicio">
+
+    <form method="POST">
+
+        <button
+
+            type="submit"
+
+            name="accion"
+
+            value="reiniciar"
+
+            class="btn-reiniciar">
+
+            🔄 Reiniciar partida
+
+        </button>
+
+    </form>
+
+</section>
+
+<!-- ========================================= -->
+<!-- INFORMACIÓN -->
+<!-- ========================================= -->
+
+<section class="card informacion">
+
+    <h2>
+
+        🧠 ¿Cómo funciona esta Inteligencia Artificial?
+
+    </h2>
+
+    <p>
+
+        Durante las primeras cinco partidas la IA juega de forma aleatoria
+        para recopilar información.
+
+    </p>
+
+    <p>
+
+        Después analiza el historial del jugador mediante un conteo de
+        frecuencias y detecta cuál movimiento utiliza con mayor frecuencia.
+
+    </p>
+
+    <p>
+
+        Finalmente selecciona automáticamente la jugada que tiene mayor
+        probabilidad de vencer dicho patrón.
+
+    </p>
+
+    <p>
+
+        Esta estrategia corresponde a un modelo sencillo de
+        <strong>reconocimiento de patrones</strong>,
+        utilizado como ejemplo de aprendizaje en Inteligencia Artificial.
+
+    </p>
+
+</section>
+
+<!-- ========================================= -->
+<!-- FOOTER -->
+<!-- ========================================= -->
+
+<footer>
+
+    <h3>
+
+        Proyecto Final
+
+    </h3>
+
+    <p>
+
+        Inteligencia Artificial y Sistemas Inteligentes
+
+    </p>
+
+    <p>
+
+        Corporación Universitaria Minuto de Dios
+
+    </p>
+
+    <p>
+
+        Desarrollado por <strong>Héctor Rico</strong>
+
+    </p>
+
+</footer>
+
+</div>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
